@@ -49,6 +49,10 @@ input.feedbackbutton{margin-top:10px;margin-bottom:10px}
 .exe-dl-toggler a{margin-left:0;font-weight:bold}
 .js .exe-dl dd{display:none;padding-left:0;margin:1em 1em 1em 37px}
 
+/* Math */
+.exe-math-img,.exe-math-code{display:none}
+.show-image .exe-math-img,.show-code .exe-math-code{display:block}
+
 /* TinyMCE: Images and media */
 .exe-figure{margin:2em 0;max-width:100%}
 .position-center{margin:2em auto}
