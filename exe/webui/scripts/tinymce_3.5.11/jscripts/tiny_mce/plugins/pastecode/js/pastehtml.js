@@ -32,14 +32,13 @@ var PasteHtmlDialog = {
 					
 					// Get the original image HTML
 					var imageSrc = dom.getAttrib(n, 'src');
-					var imageAlt = dom.getAttrib(n, 'alt');
 					var imageWidth = dom.getAttrib(n, 'width');
 					var imageHeight = dom.getAttrib(n, 'height');
-					this.originalImage = "<img alt='"+imageAlt.replace(/"/g, "&quot;")+"' src='"+imageSrc+"' width='"+imageWidth+"' height='"+imageHeight+"' />";
+					this.originalImage = "<img alt='$PasteHtmlDialogAlt' src='"+imageSrc+"' width='"+imageWidth+"' height='"+imageHeight+"' />";
 					
 					// Alt and src
 					x.src.value = imageSrc;
-					x.imgAlt.value = imageAlt;
+					x.imgAlt.value = dom.getAttrib(n, 'alt');
 					
 					// Get the original code
 					var htmlSource = parent.jQuery(".exe-math-code",step2).html();
@@ -88,11 +87,11 @@ var PasteHtmlDialog = {
 			if (alt=="") {
 				tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.missing_alt'), function(s) {
 					if (s) {
-						PasteHtmlDialog.insertMath(src,"",alt);
+						PasteHtmlDialog.insertMath(src,"",alt); // The image has not changed (img == "")
 					}
 				});
 			} else {
-				this.insertMath(src,"",alt);
+				this.insertMath(src,"",alt); // The image has not changed (img == "")
 			}
 			return false;
 		}
@@ -168,12 +167,17 @@ var PasteHtmlDialog = {
 		return k;
 	},
 	insertMath : function(src,img,alt){
+		alt = alt.replace(/"/g, "&quot;");
 		var content = "<div class='"+this.getMathBlockClass()+"'>";
 		if (this.isMathImg) {
 			parent.jQuery(this.mathImageBlock).remove();
-			content += "<p class='exe-math-img'>"+this.originalImage+"</p>";
+			// The image has not changed
+			if (img=="") content += "<p class='exe-math-img'>"+this.originalImage.replace("$PasteHtmlDialogAlt",alt)+"</p>";
+			// The imagen has changed
+			else content += "<p class='exe-math-img'><img alt='"+alt+"' src='"+src+"' width='"+img.width+"' height='"+img.height+"' /></p>";
+		} else {
+			content += "<p class='exe-math-img'><img alt='"+alt+"' src='"+src+"' width='"+img.width+"' height='"+img.height+"' /></p>";
 		}
-		else content += "<p class='exe-math-img'><img alt='"+alt.replace(/"/g, "&quot;")+"' src='"+src+"' width='"+img.width+"' height='"+img.height+"' /></p>";
 		content += "<p class='exe-math-code'>"+this.mathCode+"</p>";
 		content += "</div>";		
 		if (!this.isMathImg) content += "<br />";		
@@ -215,19 +219,25 @@ var PasteHtmlDialog = {
 	},	
 	toggleMathJax : function(){
 		var type = this.getSelectedOption("use");
+		var h = 148;
 		var display = "block";
-		if (type=="image") display = "none";
+		if (type=="image") {
+			display = "none";
+			h = 174;
+		}
 		document.getElementById("useMathJax").style.display = display;
+		document.getElementById("htmlSource").style.height = h+"px";
 	},
 	toggle : function(id,val) {
 		var display = "none";
-		var h = 250;
+		var h = 305;
 		if (val) {
 			display = "block";
 			h = 148;
-		}
+			if (this.getSelectedOption("use")=="image") h = 174;
+ 		}
 		document.getElementById("mathOptions").style.display = display;
-		document.getElementById("htmlSource").style.height = h;
+		document.getElementById("htmlSource").style.height = h+"px";
 	},
 	insert : function() {
 		var f = document.forms[0];

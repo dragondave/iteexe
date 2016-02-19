@@ -18,7 +18,7 @@
 				ed.windowManager.open({
 					file : url + '/pastehtml.htm',
 					width : 600,
-					height : 550,
+					height : 425,
 					inline : 1
 				}, {
 					plugin_url : url // Plugin absolute URL
