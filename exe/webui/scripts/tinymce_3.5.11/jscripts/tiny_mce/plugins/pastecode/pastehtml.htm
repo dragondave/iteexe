@@ -5,16 +5,51 @@
 	<script language="javascript" type="text/javascript" src="../../tiny_mce_popup.js"></script>
 	<script language="javascript" type="text/javascript" src="js/pastehtml.js"></script>
 	<base target="_self" />
+	<style type="text/css">
+		.radio strong{display:inline-block;width:12em;text-align:right;padding-right:.5em}
+		#useMathJax input{margin:0 .8em 0 13.3em}
+	</style>
 </head>
 <body onLoad="tinyMCEPopup.executeOnLoad('onLoadInit();');" style="display: none">
-<form name="source" onsubmit="PasteHtmlDialog.insert();">
-	<div style="float: left" class="title">{#pastecode.paste_html_desc}</div>
-
-	<br style="clear: both" />
-
+<form name="source" onsubmit="return PasteHtmlDialog.insert();">
+	<div class="title">{#pastecode.paste_html_desc}</div>
+	<p>
+		<input type="checkbox" name="isMath" id="isMath" onchange="PasteHtmlDialog.toggle('mathOptions',this.checked)" /><label for="wrapper">{#pastecode.is_math}</label>		
+	</p>
+	<fieldset id="mathOptions" style="display:none;padding:0 5px 5px;margin-bottom:10px">
+		<legend>{#pastecode.options}:</legend>
+		<div id="prev" style="display:none"></div>
+		<p class="radio">
+			<strong>Language:</strong>
+			<label for="latex" style="margin-right:1em">
+				<input type="radio" id="latex" name="mathLang" value="latex" checked="checked" /> LaTeX
+			</label>
+			<label for="mathml">
+				<input type="radio" id="mathml" name="mathLang" value="mathml" disabled="disabled"  /> MathML ({#pastecode.soon})
+			</label>
+		</p>	
+		<p class="radio">
+			<strong>Presentación:</strong>
+			<label for="useCode" style="margin-right:1em">
+				<input type="radio" id="useCode" name="use" value="code" checked="checked" onchange="PasteHtmlDialog.toggleMathJax();" /> {#pastecode.use_code}
+			</label>
+			<label for="useImg">
+				<input type="radio" id="useImg" name="use" value="image" onchange="PasteHtmlDialog.toggleMathJax();"  /> {#pastecode.use_image}
+			</label>				
+		</p>
+		<p id="useMathJax">
+			<input type="checkbox" name="mathjax" id="mathjax" checked="checked" /><label for="highlight">{#pastecode.use_mathjax}</label>
+		</p>		
+		<p style="margin-top:15px">
+			<input type="hidden" name="src" id="src" value="" onchange="PasteHtmlDialog.updateImage(this.value);" />
+			<label for="imgAlt">{#pastecode.img_alt}:</label>
+			<input type="text" name="imgAlt" id="imgAlt" />
+		</p>
+	</fieldset>	
+	
 	<div>{#pastecode.paste_code_title}</div>
 
-	<textarea name="htmlSource" id="htmlSource" rows="15" cols="100" style="width: 100%; height: 321px; font-family: 'Courier New',Courier,mono; font-size: 12px;" dir="ltr" wrap="soft"></textarea>
+	<textarea name="htmlSource" id="htmlSource" rows="15" cols="100" style="width: 100%; height: 305px; font-family: 'Courier New',Courier,mono; font-size: 12px;" dir="ltr" wrap="soft"></textarea>
 
 	<div class="mceActionPanel">
 		<div style="float: left">
