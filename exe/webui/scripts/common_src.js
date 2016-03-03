@@ -102,8 +102,8 @@ var $exe = {
 		}
 	},
 	
-	// Quicktime and Real Media for IE
-	ieMediaReplace : function() {
+	mediaReplace : function() {
+		// Quicktime and Real Media for IE
 		if (navigator.appName == "Microsoft Internet Explorer") {
 			var e = document.getElementsByTagName("OBJECT");
 			var t = e.length;
@@ -122,6 +122,24 @@ var $exe = {
 					}
 				}
 			}
+		} else if (document.body.className.indexOf("exe-epub3")==0) {
+			// Replace OBJECT with VIDEO and AUDIO in ePub
+			$("object").each(function() {
+				var e = $(this);
+				var p = e.attr("data"); // Player
+				var w, h, f; // Width, Height, File
+				var v = $("param[name=flv_src]", e);
+				if (p == "flowPlayer.swf" && v.length==1) {
+					w = this.width || 320;
+					h = this.height || 240;
+					f = v.attr("value");
+					e.before('<video width="' + w + '" height="' + h + '" src="' + f + '" controls="controls"><a href="' + f + '">' + f + '</a></video>').remove()
+				} else if (p.indexOf("xspf_player.swf?song_url=") == 0) {
+					f = p.replace("xspf_player.swf?song_url=", "");
+					f = f.split("&")[0];
+					e.before('<audio width="300" height="32" src="' + f + '" controls="controls"><a href="' + f + '">' + f + '</a></audio>').remove()
+				}
+			});
 		}
 	},
 	
@@ -1255,6 +1273,6 @@ if (typeof jQuery != "undefined") {
         $exe.init();
     });
 	$(window).load(function(){
-		$exe.ieMediaReplace();
+		$exe.mediaReplace();
 	});	
 }
