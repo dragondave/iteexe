@@ -15,7 +15,7 @@ var exe_advalign = {
 		if (node.nodeName!="IMG") return false;
 		
 		e.each(function(){
-			if(this.className && this.className.indexOf("exe-figure")==0) {
+			if(this.className && (this.className.indexOf("exe-figure")==0 || this.className.indexOf("exe-math ")==0)) {
 			
 				ed.controlManager.get("justifyleft").setActive(false);
 				ed.controlManager.get("justifycenter").setActive(false);

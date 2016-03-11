@@ -20,9 +20,21 @@ var ImageDialog = {
 
 		if (n.nodeName == 'IMG') {        
             // The New eXeLearning 
-            document.getElementById("caption_panel-fieldset-1").style.display="none";
-            document.getElementById("caption_panel-explanation").innerHTML=tinyMCEPopup.getLang("advimage_dlg.caption_warning");
-            document.getElementById("caption_panel").style.height="294px";
+                // Check if it's mathematical markup
+                if (parent && typeof(parent.jQuery)!="undefined") {
+                    var c = parent.jQuery(n);
+                    var e = c.parents();
+                    e.each(function(){
+                        if(this.className && this.className.indexOf("exe-math ")==0) {
+                            tinyMCEPopup.alert(tinyMCEPopup.getLang('advimage_dlg.use_the_math_plugin'));
+                            tinyMCEPopup.close();
+                        }
+                    });
+                }
+                // Hide some elements
+                document.getElementById("caption_panel-fieldset-1").style.display="none";
+                document.getElementById("caption_panel-explanation").innerHTML=tinyMCEPopup.getLang("advimage_dlg.caption_warning");
+                document.getElementById("caption_panel").style.height="294px";
             // /The New eXeLearning
 			nl.src.value = dom.getAttrib(n, 'src');
 			nl.width.value = dom.getAttrib(n, 'width');

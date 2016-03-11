@@ -12,6 +12,7 @@ tinyMCE.addI18n('en.advimage_dlg',{"image_list":_("Image List"),"align_right":_(
 "public_domain":_("Public Domain"),
 "all_rights_reserved":_("All Rights Reserved"),
 "caption_explanation":_("You will not be able to edit the header or the caption from this dialog."),
-"caption_warning":_("The header and the caption can't be edited from this dialog. You can change or remove them editing the text itself.")
+"caption_warning":_("The header and the caption can't be edited from this dialog. You can change or remove them editing the text itself."),
+"use_the_math_plugin":_("Use the \u0022Paste mathematical markup\u0022 button to edit that image")
 // The New eXeLearning
 });

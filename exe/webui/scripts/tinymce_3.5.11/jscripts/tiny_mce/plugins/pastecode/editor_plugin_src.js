@@ -24,6 +24,16 @@
 					plugin_url : url // Plugin absolute URL
 				});
 			});
+			ed.addCommand('mcePasteMath', function() {
+				ed.windowManager.open({
+					file : url + '/pastemath.htm',
+					width : 600,
+					height : 392,
+					inline : 1
+				}, {
+					plugin_url : url // Plugin absolute URL
+				});
+			});
 
 			ed.onInit.add(function() {
 				if (ed.settings.content_css !== false) ed.dom.loadCSS(url + "/css/content.css");
@@ -32,6 +42,7 @@
 			// Register plugin buttons
 			ed.addButton('pastehtml', {title : 'pastecode.paste_html_desc', cmd : 'mcePasteHtml', image : url + '/img/pastehtml.gif' });
 			ed.addButton('pastecode', {title : 'pastecode.paste_code_desc', cmd : 'mcePasteCode', image : url + '/img/pastecode.gif' });
+			ed.addButton('pastemath', {title : 'pastecode.paste_math_desc', cmd : 'mcePasteMath', image : url + '/img/pastemath.png' });
 		},
 	
 		/**
@@ -45,7 +56,7 @@
 				longname : 'Paste code',
 				author : 'Ignacio Gros',
 				authorurl : 'http://www.gros.es',
-				version : "3.0"
+				version : "4.0"
 			};
 		}
 	});

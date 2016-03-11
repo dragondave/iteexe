@@ -7,7 +7,7 @@ paste_html_title : _('Use CTRL+V on your keyboard to paste the code into the win
 paste_include_wrapper : _('Include wrapper (improves presentation)'),
 highlight_syntax : _('Highlight syntax'),
 options : _('Options'),
-language : _('Language'),
+language : _('Markup language'),
 language_missing : _('Please select a language'),
 not_defined : _('-- Not Set --'),
 markup : _('Markup (HTML, etc.)'),
@@ -17,5 +17,17 @@ presentation_bright : _('Light'),
 presentation_dark : _('Dark'),
 line_numbers : _('Line numbers'),
 line_highlight : _('Line highlight'),
-example : _('Example')
+example : _('Example'),
+paste_math_desc : _('Paste mathematical markup'),
+general : _('General'),
+help : _('Help'),
+use_code : _('Use code (recommended)'),
+use_image : _('Use image'),
+use_mathjax : _('Use MathJax from mathjax.org (online only) or your own copy'),
+soon : _('soon...'),
+img_alt : _('Title (alternative text)'),
+missing_alt:_("Continue without a title? Some users might see an image instead of the rendered code. Without the title the image may not be accessible to them."),
+// Errors
+inline_popups_plugin_is_required : _('The plugin \u0022inlinepopups\u0022 must be enabled'),
+jquery_is_required : _('jQuery is required')
 });

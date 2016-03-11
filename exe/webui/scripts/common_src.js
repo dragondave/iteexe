@@ -213,7 +213,7 @@ var $exe = {
                     var img = $(".exe-math-img",e);
                     if (e.hasClass("show-image")) {
                         img.show();
-                    } else if (e.hasClass("exe-beautiful-math")) {
+                    } else if (e.hasClass("exe-math-engine")) {
                         if (navigator.onLine) mathjax = true;
                         code.show();
                     } else {

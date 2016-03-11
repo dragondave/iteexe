@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{#pastecode.paste_math_desc}</title>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+	<script language="javascript" type="text/javascript" src="js/pastemath.js"></script>
+	<script type="text/javascript" src="../../utils/mctabs.js"></script>
+	<link href="css/pastemath.css" rel="stylesheet" type="text/css" />
+</head>
+<body onload="tinyMCEPopup.executeOnLoad('onLoadInit();');" style="display: none">
+<form name="source" onsubmit="return PasteMathDialog.insert()">
+	
+	<div class="tabs">
+		<ul>
+			<li id="general_tab" class="current"><span><a href="#general_panel" onclick="mcTabs.displayTab('general_tab','general_panel');return false">{#pastecode.general}</a></span></li>
+			<li id="help_tab"><span><a href="#appearance_panel" onclick="mcTabs.displayTab('help_tab','help_panel');return false">{#pastecode.help}</a></span></li>
+		</ul>
+	</div>
+
+	<div class="panel_wrapper">
+	
+		<div id="general_panel" class="panel">
+            <div class="wrapper">
+                <fieldset id="mathOptions">
+                    <legend>{#pastecode.options}:</legend>
+                    <div id="prev" style="display:none"></div>
+                    <p class="radio">
+                        <strong>{#pastecode.language}:</strong>
+                        <label for="latex" style="margin-right:1em">
+                            <input type="radio" id="latex" name="mathLang" value="latex" checked="checked" /> LaTeX
+                        </label>
+                        <label for="mathml">
+                            <input type="radio" id="mathml" name="mathLang" value="mathml" disabled="disabled"  /> MathML ({#pastecode.soon})
+                        </label>
+                    </p>	
+                    <p class="radio">
+                        <strong>{#pastecode.presentation}:</strong>
+                        <label for="useCode" style="margin-right:1em">
+                            <input type="radio" id="useCode" name="use" value="code" checked="checked" onchange="PasteMathDialog.toggleMathJax();" /> {#pastecode.use_code}
+                        </label>
+                        <label for="useImg">
+                            <input type="radio" id="useImg" name="use" value="image" onchange="PasteMathDialog.toggleMathJax();"  /> {#pastecode.use_image}
+                        </label>				
+                    </p>
+                    <p id="useMathJax">
+                        <input type="checkbox" name="mathjax" id="mathjax" checked="checked" /><label for="highlight">{#pastecode.use_mathjax}</label>
+                    </p>		
+                    <p style="margin-top:15px">
+                        <input type="hidden" name="src" id="src" value="" onchange="PasteMathDialog.updateImage(this.value);" />
+                        <label for="imgAlt">{#pastecode.img_alt}:</label>
+                        <input type="text" name="imgAlt" id="imgAlt" />
+                    </p>
+                </fieldset>
+                <div>{#pastecode.paste_code_title}</div>
+                <textarea name="htmlSource" id="htmlSource" rows="15" cols="100"></textarea>
+            </div>
+		</div><!-- /#general_panel -->	
+		
+		<div id="help_panel" class="panel">
+			<p>...</p>
+		</div><!-- /#help_panel -->
+	
+	</div><!-- /panel_wrapper -->
+
+	<div class="mceActionPanel">
+		<div style="float: left">
+			<input type="submit" name="insert" value="{#insert}" id="insert" />
+		</div>
+
+		<div style="float: right">
+			<input type="button" name="cancel" value="{#cancel}" onclick="tinyMCEPopup.close();" id="cancel" />
+		</div>
+	</div>
+	
+</form>
+</body> 
+</html>
