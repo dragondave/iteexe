@@ -43,7 +43,7 @@ var $exe = {
         $exe.hint.init();
         $exe.setIframesProtocol();
         $exe.hasTooltips();
-		$exe.math();
+        $exe.math.init();
         if (typeof($.prettyPhoto) != 'undefined') $("a[rel^='lightbox']").prettyPhoto({
             social_tools: "",
             deeplinking: false,
@@ -200,29 +200,32 @@ var $exe = {
         }
     },
 	
-	// Enable MathJax
-	math : function(){
-		var math = $(".exe-math");
-		var mathjax = false;
-		if (math.length>0) {
-			math.each(function(){
-				var e = $(this);
-				var code = $(".exe-math-code",e);
-				var img = $(".exe-math-img",e);
-				if (e.hasClass("show-image")) {
-					img.show();
-				} else if (e.hasClass("exe-beautiful-math")) {
-					if (navigator.onLine) mathjax = true;
-					code.show();
-				} else {
-					code.show();
-				}
-			});
-			if (mathjax && navigator.onLine) {
-				$exe.loadScript("https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML");
-			}
-		}
-	},	
+    // Enable MathJax
+    math : {
+        engine : "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML",
+        init : function(){
+            var math = $(".exe-math");
+            var mathjax = false;
+            if (math.length>0) {
+                math.each(function(){
+                    var e = $(this);
+                    var code = $(".exe-math-code",e);
+                    var img = $(".exe-math-img",e);
+                    if (e.hasClass("show-image")) {
+                        img.show();
+                    } else if (e.hasClass("exe-beautiful-math")) {
+                        if (navigator.onLine) mathjax = true;
+                        code.show();
+                    } else {
+                        code.show();
+                    }
+                });
+                if (mathjax && navigator.onLine) {
+                    $exe.loadScript($exe.math.engine);
+                }
+            }
+        }
+    },
 	
     // Add WAI-ARIA roles
 	addRoles: function() {
