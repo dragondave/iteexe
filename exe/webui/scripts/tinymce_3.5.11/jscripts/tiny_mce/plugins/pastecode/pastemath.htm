@@ -51,7 +51,7 @@
                         <input type="text" name="imgAlt" id="imgAlt" />
                     </p>
                 </fieldset>
-                <div>{#pastecode.paste_code_title}</div>
+                <div id="pasteInstructions">{#pastecode.paste_math_title}</div>
                 <textarea name="htmlSource" id="htmlSource" rows="15" cols="100"></textarea>
             </div>
 		</div><!-- /#general_panel -->	
@@ -66,6 +66,8 @@
 		<div style="float: left">
 			<input type="submit" name="insert" value="{#insert}" id="insert" />
 		</div>
+		
+		<input type="button" name="openEditor" value="{#pastecode.open_editor}" onclick="PasteMathDialog.mathEditor.start()" id="openEditor" class="updateButton" />
 
 		<div style="float: right">
 			<input type="button" name="cancel" value="{#cancel}" onclick="tinyMCEPopup.close();" id="cancel" />

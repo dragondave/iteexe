@@ -13,6 +13,9 @@ var PasteMathDialog = {
         
         var useMathJaxSpan = document.getElementById("useMathJax");
 		useMathJaxSpan.innerHTML = useMathJaxSpan.innerHTML.replace("mathjax.org","<a href='https://www.mathjax.org/' target='_blank'>mathjax.org</a>");        
+		
+		var pasteInstructionsSpan = document.getElementById("pasteInstructions");
+		pasteInstructionsSpan.innerHTML = pasteInstructionsSpan.innerHTML.replace("eXeMathEditor","<a href='#' onclick='PasteMathDialog.mathEditor.start();return false'>fMath</a>");
         
         mcTabs.displayTab('general_tab','general_panel');        
 		
@@ -59,6 +62,40 @@ var PasteMathDialog = {
 		} else {
 			// Get the selected contents as text and place it in the input
 			f.htmlSource.value = tinyMCEPopup.editor.selection.getContent({format : 'text'});
+		}
+	},
+	mathEditor : {
+		isWarned : false,
+		start : function(){
+			PasteMathDialog.mathEditor.field = document.getElementById("htmlSource");
+			if (PasteMathDialog.mathEditor.isWarned==false) {
+				var extra = tinyMCEPopup.getLang('pastecode.equation_editor_warning')+'\n\n';
+				if (PasteMathDialog.mathEditor.field.value=="") extra = "";
+				tinyMCEPopup.confirm(extra+tinyMCEPopup.getLang('pastecode.equation_editor_instructions'), function(s) {
+					if (s) {
+						PasteMathDialog.mathEditor.isWarned = true;
+						PasteMathDialog.mathEditor.start();
+					}
+				});
+				return false;
+			}
+			var mypage = "/tools/fMath/";
+			var myname = tinyMCEPopup.getLang("pastecode.equation_editor");
+			var w = 983;
+			var features = "titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no";
+			var h = 418;
+			var win = null;
+			var winl = (screen.width-w)/2;
+			var wint = (screen.height-h)/2;
+			if (winl < 0) winl = 0;
+			if (wint < 0) wint = 0;
+			var settings = 'height=' + h + ',';
+			settings += 'width=' + w + ',';
+			settings += 'top=' + wint + ',';
+			settings += 'left=' + winl + ',';
+			settings += features;
+			win = window.open(mypage,myname,settings);
+			win.window.focus();
 		}
 	},
 	setSelectedOption : function(n,v){
