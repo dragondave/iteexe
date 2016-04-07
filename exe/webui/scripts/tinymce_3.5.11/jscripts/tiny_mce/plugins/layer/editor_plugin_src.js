@@ -190,9 +190,16 @@
 		},
 
 		_getParentLayer : function(n) {
-			return this.editor.dom.getParent(n, function(n) {
-				return n.nodeType == 1 && /^(absolute|relative|static)$/i.test(n.style.position);
-			});
+			// The New eXeLearning
+			// Add try + cath to avoid problems when inserting <math> tags			
+			try {
+				return this.editor.dom.getParent(n, function(n) {
+					return n.nodeType == 1 && /^(absolute|relative|static)$/i.test(n.style.position);
+				});
+			} catch (e) {
+				
+			}
+			// / The New eXeLearning
 		},
 
 		_insertLayer : function() {

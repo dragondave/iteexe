@@ -11,4 +11,4 @@
 .float-right{float:right;margin:.5em 0 1em 2em}
 .exe-math.code-only,.exe-math-img img{box-shadow:0 0 7px 0 rgba(0,0,0,0.5);padding:20px;border-radius:2px}
 .exe-math-code{display:none}
-.code-only .exe-math-code{display:block}
+.code-only{width:250px;height:50px;background:url(../img/pastemath_math.png) no-repeat 50% 50%}

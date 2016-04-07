@@ -69,26 +69,25 @@ var PasteMathDialog = {
 				}
 			}
 			
-		} else if (n.nodeName == 'P') {
+		} else if (n.nodeName == 'DIV') {
 			
-			var step1 = n.parentNode;
-			var c = step1.className;
+			var c = n.className;
 			
-			if (step1 && step1.nodeName=="DIV" && c.indexOf("exe-math")!=-1 && c.indexOf("code-only")!=-1) {
+			if (c.indexOf("exe-math")!=-1 && c.indexOf("code-only")!=-1) {
 				
 				// Code without image				
 				
 				// "Globals"
 				this.isMathBlock = true;
-				this.mathBlock = step1;				
+				this.mathBlock = n;				
 				
 				// Get the original code
-				var htmlSource = parent.jQuery(".exe-math-code",step1).html();
+				var htmlSource = parent.jQuery(".exe-math-code",n).html();
 				this.htmlSource = htmlSource;
 				f.htmlSource.value = htmlSource;
 				
 				// MathJax
-				if (!showImage && step1.className.indexOf("exe-math-engine")==-1) x.mathjax.checked = false;
+				if (!showImage && n.className.indexOf("exe-math-engine")==-1) x.mathjax.checked = false;
 				
 				// Hide the alternative text field
 				x.includeImage.checked = false;
@@ -153,23 +152,13 @@ var PasteMathDialog = {
 			}
 		}	
 	},	
-	createMathImage : function(field_name, src_latex, font_size) {
+	createMathImage : function(field_name, math_code, font_size) {
 		
 		// Update the image only if the code has changed:
-		if (this.isMathBlock && this.htmlSource==src_latex && typeof(this.originalImage)!='undefined') {
+		
+		if (this.isMathBlock && this.htmlSource==math_code && typeof(this.originalImage)!='undefined') {
 			// Insert the new code
-			var alt = document.getElementById('imgAlt').value;
-			if (alt=="") {
-				tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.missing_alt'), function(s) {
-					if (s) {
-						PasteMathDialog.insertMathAndImage(src,"",alt); // The image has not changed (img == "")
-					} else {
-						PasteMathDialog.preloader.hide();
-					}
-				});
-			} else {
-				this.insertMathAndImage(src,"",alt); // The image has not changed (img == "")
-			}
+			PasteMathDialog.insertMathAndImage(src,"",document.getElementById('imgAlt').value); // The image has not changed (img == "")
 			return false;
 		}
 		
@@ -186,7 +175,7 @@ var PasteMathDialog = {
 
 		var local_imagePath = ""
 
-		if (src_latex == "") {
+		if (math_code == "") {
 			PasteMathDialog.preloader.hide();
 			return;
 		}
@@ -205,14 +194,18 @@ var PasteMathDialog = {
 		// netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
 		// pass the file information on to the server,
 		// to generate the image into the server's "previews" directory:
+
+		var method = 'generateTinyMCEmath';
+		if (math_code.indexOf("<math")!=-1) method = 'generateTinyMCEmathML';
+        
 		w.nevow_clientToServerEvent(
-			'generateTinyMCEmath', 
+			method, 
 			this, 
 			'', 
 			win, 
 			win.name, 
 			field_name, 
-			src_latex, 
+			math_code, 
 			4, 
 			preview_math_imagefile, 
 			preview_math_srcfile
@@ -298,18 +291,7 @@ var PasteMathDialog = {
 		var img = document.getElementById('previewImg');		
 		if (img) {	
 			// Insert the new code
-			var alt = document.getElementById('imgAlt').value;
-			if (alt=="") {
-				tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.missing_alt'), function(s) {
-					if (s) {
-						PasteMathDialog.insertMathAndImage(src,img,alt);
-					} else {
-						PasteMathDialog.preloader.hide();
-					}
-				});
-			} else {
-				this.insertMathAndImage(src,img,alt);
-			}
+			PasteMathDialog.insertMathAndImage(src,img,document.getElementById('imgAlt').value);
 		}	
 	},	
 	updateImage : function(src) {
@@ -360,16 +342,36 @@ var PasteMathDialog = {
 		var f = document.forms[0];
 		var content = f.htmlSource.value;
 		if (content!="") {
-            this.mathCode = content;
+            
+			this.mathCode = content;
 			var type = this.getSelectedOption("use");
 			this.preloader.show();
-			// Insert code without image
+			
 			if (type=="code" && !document.getElementById("includeImage").checked) {
+				
+				// Insert code without image
 				this.insertMath(content);
 				return false;
+				
+			} else {
+				
+				// Create the image, but ask for confirmation if it has no alternative text
+				var alt = document.getElementById('imgAlt').value;
+				if (alt=="") {
+					tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.missing_alt'), function(s) {
+						if (s) {
+							PasteMathDialog.createMathImage("src",content);
+						} else {
+							PasteMathDialog.preloader.hide();
+						}
+					});
+					return false;
+				} else {
+					PasteMathDialog.createMathImage("src",content);
+				}		
+				
 			}
-			this.createMathImage("src",content);
-        }
+        }		
 		return false;
 	}
 };
