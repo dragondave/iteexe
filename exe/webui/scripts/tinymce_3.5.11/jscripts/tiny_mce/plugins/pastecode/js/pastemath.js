@@ -11,11 +11,11 @@ var PasteMathDialog = {
 			return false;
 		}		
         
-        var useMathJaxSpan = document.getElementById("useMathJax");
-		useMathJaxSpan.innerHTML = useMathJaxSpan.innerHTML.replace("mathjax.org","<a href='https://www.mathjax.org/' target='_blank'>mathjax.org</a>");        
+        var codeOptionsSpan = document.getElementById("codeOptions");
+		codeOptionsSpan.innerHTML = codeOptionsSpan.innerHTML.replace("mathjax.org","<a href='https://www.mathjax.org/' target='_blank'>mathjax.org</a>");        
 		
 		var pasteInstructionsSpan = document.getElementById("pasteInstructions");
-		pasteInstructionsSpan.innerHTML = pasteInstructionsSpan.innerHTML.replace("eXeMathEditor","<a href='#' onclick='PasteMathDialog.mathEditor.start();return false'>fMath</a>");
+		pasteInstructionsSpan.innerHTML = pasteInstructionsSpan.innerHTML.replace("eXeMathEditor","<a href='#' onclick='PasteMathDialog.mathEditor.start();return false'>fMath</a>").replace("(LaTeX...)","(LaTeX, MathML)");
         
         mcTabs.displayTab('general_tab','general_panel');        
 		
@@ -53,13 +53,14 @@ var PasteMathDialog = {
 					var showImage = step2.className.indexOf("show-image")!=-1;
 					if (showImage) {
 						this.setSelectedOption("use","image");
-						PasteMathDialog.toggleMathJax();
+						PasteMathDialog.toggleCodeOptions();
 					}
 					// MathJax
 					if (!showImage && step2.className.indexOf("exe-math-engine")==-1) x.mathjax.checked = false;
 				}
 			}
 		} else {
+			alert("To do.");
 			// Get the selected contents as text and place it in the input
 			f.htmlSource.value = tinyMCEPopup.editor.selection.getContent({format : 'text'});
 		}
@@ -125,13 +126,13 @@ var PasteMathDialog = {
 			if (alt=="") {
 				tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.missing_alt'), function(s) {
 					if (s) {
-						PasteMathDialog.insertMath(src,"",alt); // The image has not changed (img == "")
+						PasteMathDialog.insertMathAndImage(src,"",alt); // The image has not changed (img == "")
 					} else {
 						PasteMathDialog.preloader.hide();
 					}
 				});
 			} else {
-				this.insertMath(src,"",alt); // The image has not changed (img == "")
+				this.insertMathAndImage(src,"",alt); // The image has not changed (img == "")
 			}
 			return false;
 		}
@@ -218,7 +219,18 @@ var PasteMathDialog = {
         k += " "+position;
 		return k;
 	},
-	insertMath : function(src,img,alt){
+	insertMath : function(code) {
+		if (this.isMathImg) {
+			parent.jQuery(this.mathImageBlock).remove();
+		}
+		var content = "<div class='"+this.getMathBlockClass()+"'>";
+			content += "<p class='exe-math-code'>"+this.mathCode+"</p>";
+		content += "</div>";		
+		if (!this.isMathImg) content += "<br />";		
+		tinyMCEPopup.editor.execCommand('mceInsertContent', false, content);
+		tinyMCEPopup.close();		
+	},
+	insertMathAndImage : function(src,img,alt){
 		alt = alt.replace(/"/g, "&quot;");
 		var content = "<div class='"+this.getMathBlockClass()+"'>";
 		if (this.isMathImg) {
@@ -253,13 +265,13 @@ var PasteMathDialog = {
 			if (alt=="") {
 				tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.missing_alt'), function(s) {
 					if (s) {
-						PasteMathDialog.insertMath(src,img,alt);
+						PasteMathDialog.insertMathAndImage(src,img,alt);
 					} else {
 						PasteMathDialog.preloader.hide();
 					}
 				});
 			} else {
-				this.insertMath(src,img,alt);
+				this.insertMathAndImage(src,img,alt);
 			}
 		}	
 	},	
@@ -271,15 +283,32 @@ var PasteMathDialog = {
 			elm.innerHTML = "";
 		}
 	},	
-	toggleMathJax : function(){
+	toggleImageAlt : function(e){
+		var display = "none";
+		if (!e) var e = document.getElementById("includeImage");
+		var h = 155;
+		if (e.checked) {
+			display = "block";
+			h = 122;
+		}
+		document.getElementById("imageOptions").style.display = display;
+		if (document.getElementById("codeOptions").style.display!="none") {
+			document.getElementById("htmlSource").style.height = h+"px";
+		}
+	},
+	toggleCodeOptions : function(){
 		var type = this.getSelectedOption("use");
 		var h = 122;
+		if (!document.getElementById("includeImage").checked) h = 155;
 		var display = "block";
 		if (type=="image") {
 			display = "none";
-			h = 149;
+			h = 182;
+			document.getElementById("imageOptions").style.display = "block";
+		} else {
+			this.toggleImageAlt();
 		}
-		document.getElementById("useMathJax").style.display = display;
+		document.getElementById("codeOptions").style.display = display;
 		document.getElementById("htmlSource").style.height = h+"px";
 	},
 	preloader : {
@@ -295,7 +324,13 @@ var PasteMathDialog = {
 		var content = f.htmlSource.value;
 		if (content!="") {
             this.mathCode = content;
+			var type = this.getSelectedOption("use");
 			this.preloader.show();
+			// Insert code without image
+			if (type=="code" && !document.getElementById("includeImage").checked) {
+				this.insertMath(content);
+				return false;
+			}
 			this.createMathImage("src",content);
         }
 		return false;

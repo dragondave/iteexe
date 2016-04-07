@@ -22,30 +22,25 @@
 		<div id="general_panel" class="panel">
             <div class="wrapper">
                 <fieldset id="mathOptions">
-                    <legend>{#pastecode.options}:</legend>
+                    <legend>{#pastecode.options}</legend>
                     <div id="prev" style="display:none"></div>
                     <p class="radio">
-                        <strong>{#pastecode.language}:</strong>
-                        <label for="latex" style="margin-right:1em">
-                            <input type="radio" id="latex" name="mathLang" value="latex" checked="checked" /> LaTeX
-                        </label>
-                        <label for="mathml">
-                            <input type="radio" id="mathml" name="mathLang" value="mathml" disabled="disabled"  /> MathML ({#pastecode.soon})
-                        </label>
-                    </p>	
-                    <p class="radio">
-                        <strong>{#pastecode.presentation}:</strong>
                         <label for="useCode" style="margin-right:1em">
-                            <input type="radio" id="useCode" name="use" value="code" checked="checked" onchange="PasteMathDialog.toggleMathJax();" /> {#pastecode.use_code}
+                            <input type="radio" id="useCode" name="use" value="code" checked="checked" onchange="PasteMathDialog.toggleCodeOptions();" /> {#pastecode.use_code}
                         </label>
                         <label for="useImg">
-                            <input type="radio" id="useImg" name="use" value="image" onchange="PasteMathDialog.toggleMathJax();"  /> {#pastecode.use_image}
+                            <input type="radio" id="useImg" name="use" value="image" onchange="PasteMathDialog.toggleCodeOptions();"  /> {#pastecode.use_image}
                         </label>				
                     </p>
-                    <p id="useMathJax">
-                        <input type="checkbox" name="mathjax" id="mathjax" checked="checked" /><label for="highlight">{#pastecode.use_mathjax}</label>
-                    </p>		
-                    <p style="margin-top:15px">
+                    <div id="codeOptions">
+						<p>
+							<input type="checkbox" name="mathjax" id="mathjax" checked="checked" /><label for="highlight">{#pastecode.use_mathjax}</label>
+						</p>
+						<p>
+							<input type="checkbox" name="includeImage" id="includeImage" checked="checked" onchange="PasteMathDialog.toggleImageAlt(this);" /><label for="altImg">{#pastecode.include_image}</label>
+						</p>
+                    </div>		
+                    <p style="margin-top:15px" id="imageOptions">
                         <input type="hidden" name="src" id="src" value="" onchange="PasteMathDialog.updateImage(this.value);" />
                         <label for="imgAlt">{#pastecode.img_alt}:</label>
                         <input type="text" name="imgAlt" id="imgAlt" />
