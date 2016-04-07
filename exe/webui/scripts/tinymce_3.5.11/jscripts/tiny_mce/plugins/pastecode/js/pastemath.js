@@ -198,36 +198,51 @@ var PasteMathDialog = {
 		var method = 'generateTinyMCEmath';
 		if (math_code.indexOf("<math")!=-1) method = 'generateTinyMCEmathML';
         
-		w.nevow_clientToServerEvent(
-			method, 
-			this, 
-			'', 
-			win, 
-			win.name, 
-			field_name, 
-			math_code, 
-			4, 
-			preview_math_imagefile, 
-			preview_math_srcfile
-		);
+		try {
+			
+			w.nevow_clientToServerEvent(
+				method, 
+				this, 
+				'', 
+				win, 
+				win.name, 
+				field_name, 
+				math_code, 
+				4, 
+				preview_math_imagefile, 
+				preview_math_srcfile
+			);	
 
-		// once the image has been generated, it SHOULD be sitting here:
-		var full_preview_url = "/previews/"+preview_math_imagefile;
+			// once the image has been generated, it SHOULD be sitting here:
+			var full_preview_url = "/previews/"+preview_math_imagefile;
 
-		win.focus();
+			win.focus();
 
-		// clear out any old value in the tinyMCE image filename field:
-		win.document.forms[0].elements[field_name].value = ""; 
-		// PreviewImage is only available for images:
-		this.updateImage(" ");
-		// the above two commands are the only way to really 
-		// ensure that we can trigger the onchange event below:
+			// clear out any old value in the tinyMCE image filename field:
+			win.document.forms[0].elements[field_name].value = ""; 
+			// PreviewImage is only available for images:
+			this.updateImage(" ");
+			// the above two commands are the only way to really 
+			// ensure that we can trigger the onchange event below:
 
-		// set the tinyMCE image filename field:
-		win.document.forms[0].elements[field_name].value = full_preview_url;
-		// then force its onchange event:
-		// PreviewImage is only available for images:
-		this.updateImage(full_preview_url);
+			// set the tinyMCE image filename field:
+			win.document.forms[0].elements[field_name].value = full_preview_url;
+			// then force its onchange event:
+			// PreviewImage is only available for images:
+			this.updateImage(full_preview_url);
+		
+		} catch(e) {
+			
+            tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.insert_code_without_image'), function(s) {
+                if (s) {
+                    // Insert code without image
+                    PasteMathDialog.insertMath(math_code);
+                } else {
+                    PasteMathDialog.preloader.hide();
+                }
+            });				
+			
+		}
 
 	},	
 	getMathBlockClass : function(withImage){
