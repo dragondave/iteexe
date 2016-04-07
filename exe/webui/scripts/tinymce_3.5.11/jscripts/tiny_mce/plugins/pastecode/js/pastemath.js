@@ -1,5 +1,5 @@
 var PasteMathDialog = {
-	isMathImg : false,
+	isMathBlock : false,
 	init : function() {
 		
 		if (!parent) {
@@ -22,17 +22,26 @@ var PasteMathDialog = {
 		var f = document.forms[0];
 		
 		// Check if it's math code
+		
 		var ed = tinyMCEPopup.editor; 
 		var n = ed.selection.getNode();
-		if (n.nodeName == 'IMG') {
-			var dom = ed.dom; 
-			var x = f.elements; 
+		var dom = ed.dom; 
+		var x = f.elements;	
+		
+		if (n.nodeName == 'IMG') { 
+			
 			var step1 = n.parentNode;
+			
 			if (step1 && step1.nodeName=="P" && dom.getAttrib(step1, 'class').indexOf("exe-math-img")!=-1) {
+				
+				// Code and image (recommended)
+				
 				var step2 = step1.parentNode;
 				if (step2 && step2.nodeName=="DIV" && step2.className.indexOf("exe-math ")!=-1) {
-					this.isMathImg = true;
-					this.mathImageBlock = step2;
+					
+					// "Globals"
+					this.isMathBlock = true;
+					this.mathBlock = step2;
 					
 					// Get the original image HTML
 					var imageSrc = dom.getAttrib(n, 'src');
@@ -59,8 +68,35 @@ var PasteMathDialog = {
 					if (!showImage && step2.className.indexOf("exe-math-engine")==-1) x.mathjax.checked = false;
 				}
 			}
+			
+		} else if (n.nodeName == 'P') {
+			
+			var step1 = n.parentNode;
+			var c = step1.className;
+			
+			if (step1 && step1.nodeName=="DIV" && c.indexOf("exe-math")!=-1 && c.indexOf("code-only")!=-1) {
+				
+				// Code without image				
+				
+				// "Globals"
+				this.isMathBlock = true;
+				this.mathBlock = step1;				
+				
+				// Get the original code
+				var htmlSource = parent.jQuery(".exe-math-code",step1).html();
+				this.htmlSource = htmlSource;
+				f.htmlSource.value = htmlSource;
+				
+				// MathJax
+				if (!showImage && step1.className.indexOf("exe-math-engine")==-1) x.mathjax.checked = false;
+				
+				// Hide the alternative text field
+				x.includeImage.checked = false;
+				this.toggleImageAlt();
+				
+			}
+			
 		} else {
-			alert("To do.");
 			// Get the selected contents as text and place it in the input
 			f.htmlSource.value = tinyMCEPopup.editor.selection.getContent({format : 'text'});
 		}
@@ -120,7 +156,7 @@ var PasteMathDialog = {
 	createMathImage : function(field_name, src_latex, font_size) {
 		
 		// Update the image only if the code has changed:
-		if (this.isMathImg && this.htmlSource==src_latex) {
+		if (this.isMathBlock && this.htmlSource==src_latex && typeof(this.originalImage)!='undefined') {
 			// Insert the new code
 			var alt = document.getElementById('imgAlt').value;
 			if (alt=="") {
@@ -201,16 +237,17 @@ var PasteMathDialog = {
 		this.updateImage(full_preview_url);
 
 	},	
-	getMathBlockClass : function(){
+	getMathBlockClass : function(withImage){
 		var type = this.getSelectedOption("use");
 		var k = "exe-math show-"+type;
+		if (withImage==false) k = "exe-math code-only";
 		if (type == "code" && document.getElementById("mathjax").checked) {
 			k += " exe-math-engine";
 		}
         var position = "position-center";
-        if (this.isMathImg) {
+        if (this.isMathBlock) {
             // Respect the alignment
-            var klass = parent.jQuery(this.mathImageBlock).attr("class");
+            var klass = parent.jQuery(this.mathBlock).attr("class");
             if (klass.indexOf(" position-left")!=-1) position = "position-left";
             else if (klass.indexOf(" position-right")!=-1) position = "position-right";
             else if (klass.indexOf(" float-left")!=-1) position = "float-left";
@@ -220,23 +257,23 @@ var PasteMathDialog = {
 		return k;
 	},
 	insertMath : function(code) {
-		if (this.isMathImg) {
-			parent.jQuery(this.mathImageBlock).remove();
+		if (this.isMathBlock) {
+			parent.jQuery(this.mathBlock).remove();
 		}
-		var content = "<div class='"+this.getMathBlockClass()+"'>";
+		var content = "<div class='"+this.getMathBlockClass(false)+"'>";
 			content += "<p class='exe-math-code'>"+this.mathCode+"</p>";
 		content += "</div>";		
-		if (!this.isMathImg) content += "<br />";		
+		if (!this.isMathBlock) content += "<br />";		
 		tinyMCEPopup.editor.execCommand('mceInsertContent', false, content);
 		tinyMCEPopup.close();		
 	},
 	insertMathAndImage : function(src,img,alt){
 		alt = alt.replace(/"/g, "&quot;");
 		var content = "<div class='"+this.getMathBlockClass()+"'>";
-		if (this.isMathImg) {
-			parent.jQuery(this.mathImageBlock).remove();
-			// The image has not changed
-			if (img=="") content += "<p class='exe-math-img'>"+this.originalImage.replace("$PasteMathDialogAlt",alt)+"</p>";
+		if (this.isMathBlock) {
+			parent.jQuery(this.mathBlock).remove();
+			// The image existed and it has not changed
+			if (img=="" && typeof(this.originalImage)!="undefined") content += "<p class='exe-math-img'>"+this.originalImage.replace("$PasteMathDialogAlt",alt)+"</p>";
 			// The imagen has changed
 			else content += "<p class='exe-math-img'><img alt='"+alt+"' src='"+src+"' width='"+img.width+"' height='"+img.height+"' /></p>";
 		} else {
@@ -244,7 +281,7 @@ var PasteMathDialog = {
 		}
 		content += "<p class='exe-math-code'>"+this.mathCode+"</p>";
 		content += "</div>";		
-		if (!this.isMathImg) content += "<br />";		
+		if (!this.isMathBlock) content += "<br />";		
 		tinyMCEPopup.editor.execCommand('mceInsertContent', false, content);
 		tinyMCEPopup.close();		
 	},
