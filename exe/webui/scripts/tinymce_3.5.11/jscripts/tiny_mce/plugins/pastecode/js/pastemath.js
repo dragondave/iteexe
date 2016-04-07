@@ -126,6 +126,8 @@ var PasteMathDialog = {
 				tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.missing_alt'), function(s) {
 					if (s) {
 						PasteMathDialog.insertMath(src,"",alt); // The image has not changed (img == "")
+					} else {
+						PasteMathDialog.preloader.hide();
 					}
 				});
 			} else {
@@ -141,12 +143,14 @@ var PasteMathDialog = {
 			w = top;
 		} else {
 			alert(tinyMCEPopup.getLang("pastecode.inline_popups_plugin_is_required"));
+			PasteMathDialog.preloader.hide();
 			return;
 		}
 
 		var local_imagePath = ""
 
 		if (src_latex == "") {
+			PasteMathDialog.preloader.hide();
 			return;
 		}
 
@@ -250,6 +254,8 @@ var PasteMathDialog = {
 				tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.missing_alt'), function(s) {
 					if (s) {
 						PasteMathDialog.insertMath(src,img,alt);
+					} else {
+						PasteMathDialog.preloader.hide();
 					}
 				});
 			} else {
@@ -276,12 +282,21 @@ var PasteMathDialog = {
 		document.getElementById("useMathJax").style.display = display;
 		document.getElementById("htmlSource").style.height = h+"px";
 	},
+	preloader : {
+		show : function(){
+			document.getElementsByTagName("html")[0].className = "working";
+		},
+		hide : function(){
+			document.getElementsByTagName("html")[0].className = "";
+		}
+	},
 	insert : function() {
 		var f = document.forms[0];
 		var content = f.htmlSource.value;
 		if (content!="") {
             this.mathCode = content;
-            this.createMathImage("src",content);
+			this.preloader.show();
+			this.createMathImage("src",content);
         }
 		return false;
 	}
