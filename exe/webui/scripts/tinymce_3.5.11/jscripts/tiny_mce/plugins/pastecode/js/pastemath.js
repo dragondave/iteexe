@@ -70,6 +70,58 @@ var PasteMathDialog = {
 					// MathJax
 					if (!showImage && step2.className.indexOf("exe-math-engine")==-1) x.mathjax.checked = false;
 				}
+			} else {
+				
+				// Check if the image was created using the old plugin (exemath)
+				
+				var img = parent.jQuery(n);
+				var exe_math_latex = img.attr("exe_math_latex");
+				
+				if (exe_math_latex && exe_math_latex!="") {
+					tinyMCEPopup.confirm(tinyMCEPopup.getLang('pastecode.update_exemath_image_1')+"\n"+tinyMCEPopup.getLang('pastecode.update_exemath_image_2'), function(s) {
+						if (s) {
+							parent.jQuery.ajax({
+								type: "GET",
+								url: exe_math_latex,
+								success: function(res){
+									
+									// We've got the code, so we set the right values
+									
+									// "Globals"
+									this.isMathBlock = true;
+									this.mathBlock = n;
+									
+									// Get the original image HTML
+									var imageSrc = dom.getAttrib(n, 'src');
+									var imageWidth = dom.getAttrib(n, 'width');
+									var imageHeight = dom.getAttrib(n, 'height');
+									this.originalImage = "<img alt='$PasteMathDialogAlt' src='"+imageSrc+"' width='"+imageWidth+"' height='"+imageHeight+"' />";
+									
+									// Alt and src
+									x.src.value = imageSrc;
+									x.imgAlt.value = dom.getAttrib(n, 'alt');
+									
+									// Get the original code
+									this.htmlSource = res;
+									f.htmlSource.value = res;
+									
+									// Type
+									PasteMathDialog.setSelectedOption("use","image");
+									PasteMathDialog.toggleCodeOptions();
+
+									tinyMCEPopup.alert(tinyMCEPopup.getLang('pastecode.update_exemath_image_3'));
+									
+								},
+								error: function(){
+									tinyMCEPopup.alert(tinyMCEPopup.getLang('pastecode.no_source_code_found'),function(){
+										tinyMCEPopup.close();
+									});
+								}
+							});
+						}
+					});
+				}
+				
 			}
 			
 		} else if (n.nodeName == 'DIV') {
@@ -276,7 +328,7 @@ var PasteMathDialog = {
 		content += "</div>";		
 		if (!this.isMathBlock) content += "<br />";		
 		tinyMCEPopup.editor.execCommand('mceInsertContent', false, content);
-		tinyMCEPopup.close();		
+		tinyMCEPopup.close();
 	},
 	insertMathAndImage : function(src,img,alt){
 		alt = alt.replace(/"/g, "&quot;");

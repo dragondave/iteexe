@@ -36,6 +36,7 @@ equation_editor_warning:_("You should save a copy of the code before continuing.
 // Errors
 inline_popups_plugin_is_required : _('The plugin \u0022inlinepopups\u0022 must be enabled'),
 jquery_is_required : _('jQuery is required'),
+no_source_code_found : _("No source code found."),
 // Math help
 math_help_1 : _("Paste your code (LaTeX...)."),
 math_help_2 : _("Choose if you want to show the code or an image."),
@@ -48,5 +49,9 @@ math_help_8 : _("If the browser has JavaScript enabled (almost always) links to 
 math_help_9 : _("If JavaScript is disabled, both (code and image) will be visible."),
 math_help_10 : _("Remember that..."),
 math_help_11 : _("You can use your favorite formula editor or use the one included in eXe (eXeMathEditor)."),
-math_help_12 : _("You can replace the generated image with another one using TinyMCE's \u0022Insert/Edit Image\u0022 option.")
+math_help_12 : _("You can replace the generated image with another one using TinyMCE's \u0022Insert/Edit Image\u0022 option."),
+// Made with the old plugin (exemath)
+update_exemath_image_1 : _("That image was created using the old formula editor."),
+update_exemath_image_2 : _("Make it compatible with the new editor?"),
+update_exemath_image_3 : _("Done! You can now edit your image.")
 });
