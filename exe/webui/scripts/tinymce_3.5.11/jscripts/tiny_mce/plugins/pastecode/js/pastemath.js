@@ -16,6 +16,9 @@ var PasteMathDialog = {
 		
 		var pasteInstructionsSpan = document.getElementById("pasteInstructions");
 		pasteInstructionsSpan.innerHTML = pasteInstructionsSpan.innerHTML.replace("eXeMathEditor","<a href='#' onclick='PasteMathDialog.mathEditor.start();return false'>fMath</a>").replace("(LaTeX...)","(LaTeX, MathML)");
+		
+		var helpPanel = document.getElementById("help_panel");
+		helpPanel.innerHTML = helpPanel.innerHTML.replace("(LaTeX...)","(LaTeX, MathML)").replace("eXeMathEditor","<a href='http://fmath.info/' target='_blank'>fMath</a>").replace("MathJax","<a href='https://www.mathjax.org/' target='_blank'>MathJax</a>");
         
         mcTabs.displayTab('general_tab','general_panel');        
 		

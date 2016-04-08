@@ -35,5 +35,18 @@ equation_editor_instructions:_("Click on the Editor's Save button when you finis
 equation_editor_warning:_("You should save a copy of the code before continuing."),
 // Errors
 inline_popups_plugin_is_required : _('The plugin \u0022inlinepopups\u0022 must be enabled'),
-jquery_is_required : _('jQuery is required')
+jquery_is_required : _('jQuery is required'),
+// Math help
+math_help_1 : _("Paste your code (LaTeX...)."),
+math_help_2 : _("Choose if you want to show the code or an image."),
+math_help_3 : _("If you show the code (recommended):"),
+math_help_4 : _("You can use MathJax to display the mathematical properly in web browsers (that will work online only)."),
+math_help_5 : _("You can include an alternative image. In that case you'll have to provide a descriptive text for it."),
+math_help_6 : _("If you don't provide an alternative image or you don't use MathJax, some users with no Internet connection might not be able to see the formula."),
+math_help_7 : _("If you prefer to show the image, the code will be there, but it won't be visible."),
+math_help_8 : _("If the browser has JavaScript enabled (almost always) links to the different versions (code, image) will be automatically created."),
+math_help_9 : _("If JavaScript is disabled, both (code and image) will be visible."),
+math_help_10 : _("Remember that..."),
+math_help_11 : _("You can use your favorite formula editor or use the one included in eXe (eXeMathEditor)."),
+math_help_12 : _("You can replace the generated image with another one using TinyMCE's \u0022Insert/Edit Image\u0022 option.")
 });
